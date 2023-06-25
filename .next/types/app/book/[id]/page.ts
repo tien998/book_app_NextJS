@@ -1,4 +1,4 @@
-// File: /home/tien/Desktop/node/js-dev-test/Book_app_NextJS/src/app/book/[id]/page.js
+// File: /home/tien/Downloads/book_app_NextJS/src/app/book/[id]/page.js
 import * as entry from '../../../../../src/app/book/[id]/page.js'
 import type { ResolvingMetadata } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

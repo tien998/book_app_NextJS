@@ -13,8 +13,9 @@ export default function CommentSection() {
 
     // giá trị từ server trả về là 1 mảng chứa các message
     socket.on('message', rs => {
+        var key = 1;
         rs.forEach(mess => {
-            cmtDisplay.push(<CmtDisplay cmts={mess} />)
+            cmtDisplay.push(<CmtDisplay cmts={mess} key={key++} />)
         });
         setCmts(cmtDisplay);
     })
@@ -30,11 +31,8 @@ export default function CommentSection() {
 
 
 function CmtDisplay({ cmts }) {
-    const [hiddenCmt, setHiddenCmt] = useState(true);
-    var cmtID = 1;
-    var spanCls = hiddenCmt ? 'cmtInput' : 'cmtInputExpand'
     return (
-        <div className={"py-4 " + spanCls}>
+        <div className={"py-4 cmtInput"}>
             {cmts}
 
         </div>
@@ -42,28 +40,34 @@ function CmtDisplay({ cmts }) {
 }
 
 function CmtForm() {
-    const formRef = useRef();
+    const [isValid, setIsValid] = useState(false);
+    const [message, setMessage] = useState('');
     const submitHandle = (e) => {
         e.preventDefault();
         try {
-            const mes = e.target.elements.message.value;
-            socket.emit('message', mes);
-            console.log('_________________ mes: ', mes);
+            setIsValid(true)
+            if (message) {
+                socket.emit('message', message);
+                setIsValid(false)
+            }
         }
         catch (err) {
             console.log('_________________ mes Er: ', err);
         }
-        formRef.current.reset();
+        setMessage('')
     }
 
     return (
         <>
             <h2 className="text-bold">Viết bình luận:</h2>
-            <form ref={formRef} onSubmit={submitHandle}>
+            <form onSubmit={submitHandle}>
                 <input className="rounded-lg border cmtInput"
                     name="message"
+                    onChange={e => setMessage(e.target.value)}
+                    value={message}
                 />
             </form>
+            {(isValid && message === '') ? <span>Bình luận không được rỗng</span> : []}
         </>
     )
 }
