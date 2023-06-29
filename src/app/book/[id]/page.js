@@ -10,20 +10,25 @@ async function BookPage({ params }) {
   var book = {};
   // const [bookArray, setBookArray] = useState([]);
 
-  await Get(book.id).then(rs => {
+  await Get(params.id).then(rs => {
     // Giá trị trả về là 1 mảng gồm 1 phần tử, lấy phần tử đầu tiên của mảng để hiển thị
     book = rs[0];
   });
 
   
   var cmtDisplay_fetch = [];
-  await GetCmt(params.id).then(rs => {
-    rs.forEach(i => {
-      var key = 1;
-      var mes = i.message;
-      cmtDisplay_fetch.push(<CmtDisplay cmts={mes} key={key++} />)
+  try {
+    await GetCmt(params.id).then(rs => {
+      rs.forEach(i => {
+        var key = 1;
+        var mes = i.message;
+        cmtDisplay_fetch.push(<CmtDisplay cmts={mes} key={key++} />)
+      });
     });
-  });
+  }
+  catch (err) {
+    console.log('_______ fetch comment failed', err);
+  }
 
 
 
