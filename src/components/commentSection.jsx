@@ -1,45 +1,17 @@
 'use client'
 
-
-
+import { useEffect, useState } from "react";
 import socket from "@/services/socket.io";
-import { useRef, useState } from "react";
 
-
-
-export default function CommentSection() {
-    const [cmts, setCmts] = useState([]);
-    const cmtDisplay = [];
-
-    // giá trị từ server trả về là 1 mảng chứa các message
-    socket.on('message', rs => {
-        var key = 1;
-        rs.forEach(mess => {
-            cmtDisplay.push(<CmtDisplay cmts={mess} key={key++} />)
-        });
-        setCmts(cmtDisplay);
-    })
-    return (
-        <div className="flex flex-col">
-            <CmtForm />
-
-            {/* Hiển thị danh sách comment  */}
-            {cmts}
-        </div>
-    );
-}
-
-
-function CmtDisplay({ cmts }) {
+export function CmtDisplay({ cmts }) {
     return (
         <div className={"py-4 cmtInput"}>
             {cmts}
-
         </div>
     )
 }
 
-function CmtForm() {
+export function CmtForm({ book_id }) {
     const [isValid, setIsValid] = useState(false);
     const [message, setMessage] = useState('');
     const submitHandle = (e) => {
@@ -47,7 +19,11 @@ function CmtForm() {
         try {
             setIsValid(true)
             if (message) {
-                socket.emit('message', message);
+                var mess = {
+                    book_id: book_id,
+                    message: message
+                }
+                socket.emit('message', mess);
                 setIsValid(false)
             }
         }
@@ -69,5 +45,30 @@ function CmtForm() {
             </form>
             {(isValid && message === '') ? <span>Bình luận không được rỗng</span> : []}
         </>
+    )
+}
+
+export function CmtDisplay_IO({ book_id }) {
+    const [cmtsDisplay_IO, setCmts_IO] = useState([]);
+
+    socket.on('message', rs => {
+        var cmtArr = [];
+        rs.forEach(i => {
+            if (i.book_id = book_id) {
+                cmtArr.unshift(<CmtDisplay cmts={i.message} />);
+            }
+        });
+        setCmts_IO(cmtArr);
+
+    })
+    useEffect(() => {
+        socket.emit('message', {})
+    },[])
+
+    return (
+        <div>
+            {cmtsDisplay_IO}
+
+        </div>
     )
 }

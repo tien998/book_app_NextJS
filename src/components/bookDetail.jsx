@@ -1,5 +1,4 @@
-
-import CommentSection from "./commentSection";
+'use client'
 
 function BookDetail({ book }) {
     return (

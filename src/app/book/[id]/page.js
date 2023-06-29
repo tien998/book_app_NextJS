@@ -1,24 +1,40 @@
+import { Get } from '@/services/fetchServices/book';
+import { GetCmt } from '@/services/fetchServices/comment';
+import BookDetail from '@/components/bookDetail';
+import { CmtDisplay, CmtDisplay_IO, CmtForm} from '@/components/commentSection';
 
 
-import CommentSection from "@/components/commentSection";
-import { Get } from "@/services/fetchServices/fetchData";
-import BookDetail from "@/components/bookDetail";
 
 
 async function BookPage({ params }) {
   var book = {};
   // const [bookArray, setBookArray] = useState([]);
 
-  await Get(params.id).then(rs => {
+  await Get(book.id).then(rs => {
     // Giá trị trả về là 1 mảng gồm 1 phần tử, lấy phần tử đầu tiên của mảng để hiển thị
-    book=rs[0];
+    book = rs[0];
   });
 
-  // setBookArray(fetch());
+  
+  var cmtDisplay_fetch = [];
+  await GetCmt(params.id).then(rs => {
+    rs.forEach(i => {
+      var key = 1;
+      var mes = i.message;
+      cmtDisplay_fetch.push(<CmtDisplay cmts={mes} key={key++} />)
+    });
+  });
+
+
+
   return (
-    <div className="flex-col items-center justify-between p-5">
+    <div className='flex-col items-center justify-between p-5'>
       <BookDetail book={book} />
-      <CommentSection />
+      <CmtForm book_id={book.id} />
+      {/* <CmtForm book_id={book.id} /> */}
+      <CmtDisplay_IO book_id={book.id} />
+      {cmtDisplay_fetch}
+
     </div>
   )
 }

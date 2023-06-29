@@ -48,3 +48,7 @@
 .text-bold {
   font-weight: bold;
 }
+
+.flex-col-reverse {
+  flex-direction: column-reverse;
+}

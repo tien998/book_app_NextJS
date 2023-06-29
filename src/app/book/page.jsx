@@ -1,18 +1,15 @@
 
+
 import BookList from '@/components/bookList';
-import { Get } from '../../services/fetchServices/fetchData';
+import { Get } from '../../services/fetchServices/book';
 
-export default async function BookListPage() {
+export default async function BookListPage({ projects }) {
 
-    var bookArray = [];
-
-    if (bookArray.length === 0) {
-        bookArray =  await Get();
-    }
+    var projects = await Get();
 
     return (
         <div className="flex-col items-center justify-between p-5">
-            <BookList bookArray={bookArray} />
+            <BookList bookArray={projects} />
         </div>
     )
 }
